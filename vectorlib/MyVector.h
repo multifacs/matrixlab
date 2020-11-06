@@ -1,5 +1,4 @@
-#ifndef _MY_VECTOR_
-#define _MY_VECTOR_
+#pragma once
 
 #include <iostream>
 
@@ -12,9 +11,9 @@ protected:
   int length;
   T* x;
 public:
-  Vector<T>* vec;
+  //Vector<T>* vec;
   Vector();
-  Vector(T _v);
+  Vector(int rowsCount);
   Vector(int rowsCount, T* _v);
   Vector(int rowsCount, T _v);
   Vector(Vector<T>& _v);
@@ -22,10 +21,13 @@ public:
 
   Vector<T> operator +(Vector<T>& _v);
   Vector<T> operator -(Vector<T>& _v);
-  Vector<T> operator *(Vector<T>& _v);
-  Vector<T> operator /(Vector<T>& _v);
+  //Vector<T> operator *(Vector<T>& _v);
+  //Vector<T> operator /(Vector<T>& _v);
   Vector<T>& operator =(Vector<T>& _v);
   T& operator[] (const int index);
+
+  bool operator==(const Vector& _v)const; 
+  bool operator!=(const Vector& _v) const; 
 
   Vector<T>& operator ++();
   Vector<T>& operator --();
@@ -37,7 +39,7 @@ public:
   template <class T1>
   friend istream& operator >> (istream& istr, Vector<T1> &A);
 
-  int Length();
+  int Length() const;
 };
 
 template <class T1>
@@ -66,15 +68,20 @@ Vector<T>::Vector()
   x = 0;
 }
 template <class T>
-Vector<T>::Vector(T _v)
+Vector<T>::Vector(int rowsCount)
 {
-  length = 1;
-  x = new T [length];
-  x[0] = _v;
+    if (rowsCount < 0)
+        throw length_error("incorrect index");
+    length = rowsCount;
+    x = new T[length];
+    for (int i = 0; i < length; i++)
+        x[i] = 0;
 }
 template <class T>
 Vector<T>::Vector(int rowsCount, T* _v)
 {
+    if (rowsCount < 0)
+        throw length_error("incorrect index");
   length = rowsCount;
 
   ///x = _v;
@@ -86,6 +93,8 @@ Vector<T>::Vector(int rowsCount, T* _v)
 template <class T>
 Vector<T>::Vector(int rowsCount, T _v)
 {
+    if (rowsCount < 0)
+        throw length_error("incorrect index");
   length = rowsCount;
   x = new T [length];
   for (int i = 0; i < length; i++)
@@ -131,7 +140,7 @@ Vector<T> Vector<T>::operator -(Vector<T>& _v)
   }
   return res;
 }
-template <class T>
+/*template <class T>
 Vector<T> Vector<T>::operator *(Vector<T>& _v)
 {
   Vector<T> res;
@@ -155,7 +164,7 @@ Vector<T> Vector<T>::operator /(Vector<T>& _v)
     res.x[i] = x[i] / _v.x[i];
   }
   return res;
-}
+}*/
 template <class T>
 Vector<T>& Vector<T>::operator =(Vector<T>& _v)
 {
@@ -171,9 +180,34 @@ Vector<T>& Vector<T>::operator =(Vector<T>& _v)
 template <class T>
 T& Vector<T>::operator[] (const int index)
 {
-  if ((index >= 0) && (index < length))
+    if ((index < 0) || (index >= length))
+        throw length_error("incorrect index");
     return x[index];
-  return x[0];
+
+  /*if ((index >= 0) && (index < length))
+    return x[index];
+  return x[0];*/
+}
+
+template<class T>
+inline bool Vector<T>::operator==(const Vector& _v) const
+{
+    if (((*this).Length() == _v.Length()))
+    {
+        for (int i = 0; i < _v.Length(); i++)
+        {
+            if ((*this).x[i] != _v.x[i])
+                return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+template<class T>
+inline bool Vector<T>::operator!=(const Vector& _v) const
+{
+    return!(_v == (*this));
 }
 
 template <class T>
@@ -211,10 +245,8 @@ Vector<T>& Vector<T>::operator -=(Vector<T>& _v)
   return *this;
 }
 template <class T>
-int Vector<T>::Length()
+int Vector<T>::Length() const
 {
   return length;
 }
 
-
-#endif
