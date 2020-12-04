@@ -29,6 +29,7 @@ protected:
 		}
 		else throw logic_error("-1");
 	};*/
+	int StartIndex;
 public:
 	//Vector<T>* vec;
 	Vector();
@@ -63,11 +64,19 @@ public:
 	Vector<T>& operator -=(Vector<T>& _v);
 
 	template <class T1>
-	friend ostream& operator<< (ostream& ostr, const Vector<T1>& A);
+	friend ostream& operator << (ostream& ostr, const Vector<T1>& A);
 	template <class T1>
 	friend istream& operator >> (istream& istr, Vector<T1>& A);
 
 	int Length() const;
+
+	void SetStartIndex(int n)
+	{
+		StartIndex = n;
+	}
+
+	template<class T1>
+	friend class Matrix;
 };
 
 template <class T1>
@@ -91,6 +100,7 @@ Vector<T>::Vector()
 {
 	length = 0;
 	x = 0;
+	StartIndex = 0;
 }
 template <class T>
 Vector<T>::Vector(int rowsCount)
@@ -101,6 +111,7 @@ Vector<T>::Vector(int rowsCount)
 	x = new T[length];
 	for (int i = 0; i < length; i++) {}
 	//x[i] = 0;
+	StartIndex = 0;
 }
 template <class T>
 Vector<T>::Vector(int rowsCount, T* _v)
@@ -114,6 +125,7 @@ Vector<T>::Vector(int rowsCount, T* _v)
 	x = new T[length];
 	for (int i = 0; i < length; i++)
 		x[i] = _v[i];
+	StartIndex = 0;
 }
 template <class T>
 Vector<T>::Vector(int rowsCount, T _v)
@@ -124,6 +136,7 @@ Vector<T>::Vector(int rowsCount, T _v)
 	x = new T[length];
 	for (int i = 0; i < length; i++)
 		x[i] = _v;
+	StartIndex = 0;
 }
 template <class T>
 Vector<T>::Vector(Vector<T>& _v)
@@ -132,6 +145,7 @@ Vector<T>::Vector(Vector<T>& _v)
 	x = new T[length];
 	for (int i = 0; i < length; i++)
 		x[i] = _v.x[i];
+	StartIndex = _v.StartIndex;
 }
 template <class T>
 Vector<T>::~Vector()
@@ -140,6 +154,7 @@ Vector<T>::~Vector()
 	if (x != 0)
 		delete[] x;
 	x = 0;
+	StartIndex = 0;
 }
 template <class T>
 Vector<T> Vector<T>::operator +(Vector<T>& _v)
@@ -206,6 +221,7 @@ Vector<T>& Vector<T>::operator =(Vector<T>& _v)
 
 	length = _v.length;
 	x = new T[length];
+	StartIndex = _v.StartIndex;
 	for (int i = 0; i < length; i++)
 		x[i] = _v.x[i];
 	return *this;
@@ -213,9 +229,9 @@ Vector<T>& Vector<T>::operator =(Vector<T>& _v)
 template <class T>
 T& Vector<T>::operator[] (const int index)
 {
-	if ((index < 0) || (index >= length))
+	if ((index < 0) || (index >= length + StartIndex))
 		throw length_error("incorrect index");
-	return x[index];
+	return x[index - StartIndex];
 
 	/*if ((index >= 0) && (index < length))
 	  return x[index];

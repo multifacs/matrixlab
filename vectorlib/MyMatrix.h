@@ -10,7 +10,10 @@ public:
         if (_r < 0)
             throw length_error("incorrect size");
         for (int i = 0; i < _r; i++)
+        {
             this->x[i].Init(_r - i);
+            this->x[i].SetStartIndex(i);
+        }
     };
 
     Matrix(const Matrix& _m)
@@ -31,8 +34,11 @@ public:
     
     Matrix(int _r, T a) : Matrix<T>(_r)
     {
-        for (int i = 0; i < _r; i++)
+        /*for (int i = 0; i < _r; i++)
             for (int j = 0; j < _r - i; j++)
+                this->x[i][j] = a;*/
+        for (int i = 0; i < _r; i++)
+            for (int j = i; j < _r; j++)
                 this->x[i][j] = a;
     };
 
@@ -107,13 +113,21 @@ public:
 
         Matrix<T> result(this->length);
         T t;
-        for (int i = 0; i < this->length; i++)
+        /*for (int i = 0; i < this->length; i++)
             for (int j = 0; j < this->length - i; j++)
             {
                 t = 0; // i = 1; j = 1;
                 for (int k = i; k < j + i + 1; k++)
                     t += x[i][k - i] * _m[k][j - k + i];
                 result[i][j] = t;
+            }*/
+        for (int i = 0; i < this->length; i++)
+            for (int j = 0; j < this->length - i; j++)
+            {
+                t = 0; // i = 1; j = 1;
+                for (int k = i; k < j + i + 1; k++)
+                    t += x[i].x[k - i] * _m[k].x[j - k + i];
+                result[i].x[j] = t;
             }
 
         return result;
@@ -134,7 +148,9 @@ public:
         {
             for (int k = 0; k < i; k++)
                 ostr << "0 ";
-            for (int j = 0; j < A.x[i].Length(); j++)
+            /*for (int j = 0; j < A.x[i].Length(); j++)
+                ostr << A.x[i][j] << " ";*/
+            for (int j = i; j < A.x[i].Length() + i; j++)
                 ostr << A.x[i][j] << " ";
 
 
