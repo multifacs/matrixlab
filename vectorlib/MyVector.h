@@ -229,7 +229,7 @@ Vector<T>& Vector<T>::operator =(Vector<T>& _v)
 template <class T>
 T& Vector<T>::operator[] (const int index)
 {
-	if ((index < 0) || (index >= length + StartIndex))
+	if ((index < StartIndex) || (index >= length + StartIndex))
 		throw length_error("incorrect index");
 	return x[index - StartIndex];
 

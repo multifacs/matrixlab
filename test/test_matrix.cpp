@@ -14,7 +14,7 @@ TEST(Matrix, cant_create_matrix_with_negative_length)
 TEST(Matrix, retrieve_value_from_filled_matrix)
 {
 	Matrix<int> m(5, 1);
-	EXPECT_EQ(m[2][0], 1);
+	EXPECT_EQ(m[2][2], 1);
 }
 
 TEST(Matrix, can_create_copied_matrix)
@@ -40,8 +40,8 @@ TEST(Matrix, can_get_size)
 TEST(Matrix, can_set_and_get_element)
 {
 	Matrix<int>Res(10);
-	Res[1][0] = 2;
-	EXPECT_EQ(Res[1][0], 2);
+	Res[1][1] = 2;
+	EXPECT_EQ(Res[1][1], 2);
 }
 
 TEST(Matrix, throws_when_set_element_with_negative_index)
@@ -67,7 +67,7 @@ TEST(Matrix, can_assign_matrices_of_equal_size)
 	Matrix<int>res(10);
 	for (int i = 0; i < res.get_rows(); i++)
 	{
-		for (int j = 0; j < res[i].Length(); j++)
+		for (int j = i; j < res[i].Length() + i; j++)
 		{
 			res[i][j] = j;
 		}
